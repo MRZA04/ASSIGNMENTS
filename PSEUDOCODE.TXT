@@ -1,0 +1,188 @@
+START Program Main
+
+FUNCTION StartUp()
+    SET Small[30] = 0
+    SET Medium[20] = 0
+    SET Large[25] = 0
+    SET Small_Rented[30] = 0
+    SET Medium_Rented[20] = 0
+    SET Large_Rented[25] = 0
+    SET Lost[0] = 0
+    RUN FileCheck()
+    RUN Menu()
+    FILE SET pointer *stock
+
+FUNCTION FileCheck()
+    stock = FILE OPEN "stock.csv"
+    IF stock NOT loaded?:
+        RUN FileMake()
+    ELSE
+        RUN FileLoad()
+
+FUNCTION FileMake()
+    stock = FILE OPEN "stock.csv" WRITE
+    SET Small[30] = {1001 - 1030}
+    SET Medium[20] = {2001 - 3020}
+    SET Large[25] = {3001 - 3025}
+    WRITE Small TO stock
+    WRITE Medium TO stock
+    WRITE Large TO stock
+    WRITE Small_Rented TO stock
+    WRITE Medium_Rented TO stock
+    WRITE Large_Rented TO stock
+    WRITE Lost TO stock
+    stock = FILE CLOSE
+    PRINT "File Generated"
+    RETURN to FUNCTION FileCheck()
+
+FUNCTION FileLoad()
+    stock = FILE OPEN "stock.csv" READ
+    IF stock NOT loaded?
+        PRINT "ERROR LOADING STOCK"
+        RUN FileMake()
+    ELSE
+        READ Small FROM stock
+        READ Medium FROM stock
+        READ Large FROM stock
+        READ Small_Rented FROM stock
+        READ Medium_Rented FROM stock
+        READ Large_Rented FROM stock
+        READ Lost FROM stock
+        stock = CLOSE FILE
+
+FUNCTION Menu()
+    PRINT "BOWL BABY BOWL - MENU"
+    PRINT "_____________________"
+    PRINT "1. RENT"
+    PRINT "2. RETURN"
+    PRINT "3. SHOW ALL STOCK"
+    PRINT "4. CHECK RENTED"
+    PRINT "5. LOST"
+    PRINT "0. EXIT"
+    PRINT "ENTER A MENU OPTION: "
+    INPUT = option
+    IF option = CASE
+        CASE 1:
+            RUN Rent()
+        CASE 2:
+            RUN Return()
+        CASE 3:
+            RUN Stock()
+        CASE 4:
+            RUN Rented()
+        CASE 5:
+            RUN LostMenu()
+        CASE 6:
+            END PROGRAM
+
+FUNCTION Rent()
+    INPUT INT RentShoe
+    CHECK RentShoe = Rented
+    IF TRUE:
+        PRINT "SHOE IS ALREADY RENTED"
+        RETURN to FUNCTION Menu()
+    ELSE:
+        IF RentShoe > 1000 & RentShoe <= 1030:
+            ADD RentShoe to Small_Rented
+            REMOVE RentShoe from Small
+            PRINT "SHOE IS NOW RENTED"
+        OR  RentShoe > 2000 & RentShoe <= 2020:
+            ADD RentShoe to Medium_Rented
+            REMOVE RentShoe from Medium
+            PRINT "SHOE IS NOW RENTED"
+        OR RentShoe > 3000 & RentShoe <= 3025:
+            ADD RentShoe to Large_Rented
+            REMOVE RentShoe from Large
+            PRINT "SHOE IS NOW RENTED"
+        ELSE:
+            PRINT "INVALID NUMBER"
+    RETURN to FUNCTION Menu()
+
+FUNCTION Return()
+    INPUT INT ReturnShoe
+    Check ReturnShoe = Rented
+    IF TRUE:
+        IF ReturnShoe > 1000 & ReturnShoe <= 1030:
+            REMOVE ReturnShoe FROM Small_Rented
+            ADD ReturnShoe TO Small
+            PRINT "SHOE HAS BEEN RETURNED"
+        OR ReturnShoe > 2000 & ReturnShoe <= 2020:
+            REMOVE ReturnShoe FROM Medium_Rented
+            ADD ReturnShoe TO Medium
+            PRINT "SHOE HAS BEEN RETURNED"
+        OR ReturnShoe > 3000 & ReturnShoe <= 3025:
+            REMOVE ReturnShoe FROM Large_Rented
+            ADD ReturnShoe TO Large
+            PRINT "SHOE HAS BEEN RETURNED"
+    ELSE:
+    PRINT "INVALID SHOE NUMBER"
+    RETURN to FUNCTION Menu()
+
+FUNCTION Stock()
+    PRINT "Small"
+    PRINT "Medium"
+    PRINT "Large"
+    PRINT "INPUT 0 TO RETURN TO MENU"
+    IF INPUT = 0:
+        RETURN to FUNCTION Menu()
+    ELSE:
+        PRINT "INVALID INPUT"
+        RETURN to INPUT
+
+FUNCTION Rented()
+    PRINT "Small_Rented"
+    PRINT "Medium_Rented"
+    PRINT "Large_Rented"
+    PRINT "INPUT 0 TO RETURN TO MENU"
+    IF INPUT = 0:
+        RETURN to FUNCTION Menu()
+    ELSE:
+        PRINT "INVALID INPUT"
+        RETURN to INPUT
+
+FUNCTION LostMenu()
+    PRINT "LOST MENU:"
+    PRINT "1. LOST SHOES"
+    PRINT "2. MARK AS LOST"
+    PRINT "3. FOUND"
+    PRINT "4. RETURN TO MENU"
+    INPUT = LostOption
+    If LostOption = Case:
+        CASE 1:
+            PRINT "Lost"
+        CASE 2:
+            RUN Lost()
+        CASE 3:
+            RUN Found()
+        CASE 4:
+            RETURN to FUNCTION Menu()
+
+FUNCTION Lost()
+    INPUT LostShoe
+    Check if LostShoe = Rented
+    IF Rented = True:
+        PRINT "SHOE IS CURRENTLY RENTED"
+    ELSE:
+        ADD LostShoe to Lost
+        REMOVE LostShoe from Small, Medium OR Large
+    RETURN to FUNCTION Menu()
+
+FUNCTION Found()
+    INPUT INT FoundShoe
+    CHECK if FoundShoe = Lost
+    IF Lost = True:
+        IF FoundShoe > 1000 & FoundShoe <= 1030:
+            REMOVE FoundShoe from Lost
+            ADD FoundShoe to Small
+            PRINT "SHOE HAS BEEN FOUND"
+        OR FoundShoe > 2000 & FoundShoe <= 2020:
+            REMOVE FoundShoe from Lost
+            ADD FoundShoe to Medium
+            PRINT "SHOE HAS BEEN FOUND"
+        OR FoundShoe > 3000 & FoundShoe <= 3025:
+            REMOVE FoundShoe from Lost
+            ADD FoundShoe to Large
+            PRINT "SHOE HAS BEEN FOUND"
+    ELSE:
+        PRINT "INVALID"
+        RETURN to FUNCTION LostMenu()
