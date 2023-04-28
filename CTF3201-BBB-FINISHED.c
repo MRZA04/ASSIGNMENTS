@@ -20,11 +20,24 @@ int Input;
 // Initialize inpuit for selecting shoe for rent, return and lost
 int Shoe_Num;
 
+// Initialize counters for statistcs
+int Small_Counter = 0;
+
+int Medium_Counter = 0;
+
+int Large_Counter = 0;
+
+int SL_Counter = 0;
+
+int ML_Counter = 0;
+
+int LL_Counter = 0;
+
 // Set FILE to stock
 FILE *stock;
 
 // Setup Functions
-int FileCheck(), FileMake(), FileLoad(), Menu(), Rent(), Return(), ShowStock(), LostMenu(), Lose_Shoe(), Found(), SaveFile(), RentSmall(), RentMedium(), RentLarge(), ReturnSmall(), ReturnMedium(), ReturnLarge(), LostSmall(), LostMedium(), LostLarge(), FoundSmall(), FoundMedium(), FoundLarge();
+int FileCheck(), FileMake(), FileLoad(), Menu(), Rent(), Return(), ShowStock(), LostMenu(), Lose_Shoe(), Found(), SaveFile(), RentSmall(), RentMedium(), RentLarge(), ReturnSmall(), ReturnMedium(), ReturnLarge(), LostSmall(), LostMedium(), LostLarge(), FoundSmall(), FoundMedium(), FoundLarge(), stats();
 
 // Starts Function to check if data file exists
 int FileCheck() {
@@ -64,6 +77,12 @@ int FileMake() {
     fwrite(lost_small, sizeof(int), 30, stock);
     fwrite(lost_medium, sizeof(int), 20, stock);
     fwrite(lost_large, sizeof(int), 25, stock);
+    fprintf(stock, "%d\n", Small_Counter);
+    fprintf(stock, "%d\n", Medium_Counter);
+    fprintf(stock, "%d\n", Large_Counter);
+    fprintf(stock, "%d", SL_Counter);
+    fprintf(stock, "%d", ML_Counter);
+    fprintf(stock, "%d", LL_Counter);
     printf("\t\tDATA FILE FOR STOCK HAS BEEN CREATED");
     
     // Closes the file
@@ -97,6 +116,12 @@ int FileLoad(){
     fread(lost_small, sizeof(int), 30, stock);
     fread(lost_medium, sizeof(int), 20, stock);
     fread(lost_large, sizeof(int), 25, stock);
+    fscanf(stock, "%d", &Small_Counter);
+    fscanf(stock, "%d", &Medium_Counter);
+    fscanf(stock, "%d", &Large_Counter);
+    fscanf(stock, "%d", &SL_Counter);
+    fscanf(stock, "%d", &ML_Counter);
+    fscanf(stock, "%d", &LL_Counter);
 
     // Closes the stock file after the data has been read
     fclose(stock);
@@ -115,6 +140,7 @@ int Menu() {
     printf("\n3) DISPLAY ALL STOCK");
     printf("\n4) CHECK RENTED");
     printf("\n5) LOST");
+    printf("\n6) STATS");
     printf("\n0) EXIT");
 
     // User inout to decide which option they want to select
@@ -132,6 +158,7 @@ int Menu() {
             ShowStock();
     }
     else if (Input == 4){
+        // Prints all the rented out shoes
         system("cls");
         printf("\nRENTED:\n");
         printf("______________\n");
@@ -157,6 +184,9 @@ int Menu() {
     else if (Input == 5){
         LostMenu();
     }
+    else if (Input == 6){
+        stats();
+    }
     else if (Input == 0){
         exit(0);
     }
@@ -181,6 +211,12 @@ int SaveFile(){
     fwrite(lost_small, sizeof(int), 30, stock);
     fwrite(lost_medium, sizeof(int), 20, stock);
     fwrite(lost_large, sizeof(int), 25, stock);
+    fprintf(stock, "%d\n", Small_Counter);
+    fprintf(stock, "%d\n", Medium_Counter);
+    fprintf(stock, "%d\n", Large_Counter);
+    fprintf(stock, "%d\n", SL_Counter);
+    fprintf(stock, "%d\n", ML_Counter);
+    fprintf(stock, "%d\n", LL_Counter);
 
     fclose (stock);
     return 0;
@@ -229,6 +265,8 @@ int RentSmall(){
             small_rented[x] = Shoe_Num;
             small[x] = 0;
             printf("SHOE HAS BEEN RENTED\n");
+            // Increases Counter for Small
+            Small_Counter = Small_Counter + 1;
             SaveFile();
             break;
         }
@@ -286,6 +324,7 @@ int RentMedium(){
             medium_rented[x] = Shoe_Num;
             medium[x] = 0;
             printf("SHOE HAS BEEN RENTED\n");
+            Medium_Counter = Medium_Counter + 1;
             SaveFile();
             break;
         }
@@ -342,6 +381,7 @@ int RentLarge(){
             large_rented[x] = Shoe_Num;
             large[x] = 0;
             printf("SHOE HAS BEEN RENTED\n");
+            Large_Counter = Large_Counter + 1;
             SaveFile();
             break;
         }
@@ -361,7 +401,7 @@ int RentLarge(){
 // Menu for renting out shoes
 int Rent(){
     system("cls");
-    printf("RENT A SHOE:");
+    printf("\nRENT A SHOE:");
     printf("\n___________");
     printf("\n1) SMALL SHOES");
     printf("\n2) MEDIUM SHOES");
@@ -388,6 +428,7 @@ int Rent(){
             break;
         default:
             printf("INBALID OPTION");
+            Rent();
             break;
     }
     return 0;
@@ -419,6 +460,7 @@ int Return(){
             break;
         default:
             printf("INVALID OPTION");
+            Return();
             break;
     }
     return 0;
@@ -584,7 +626,7 @@ int ReturnLarge(){
         Menu();
     }
     else if (Input == 1){
-        Rent();
+        Return();
     }
     return 0;
 }
@@ -613,11 +655,15 @@ int ShowStock() {
         system("cls");
         Menu();
     }
+    else{
+        ShowStock();
+    }
     return 0;
 }
 
 // Function to run menu for lost shoes
 int LostMenu(){
+    system("cls");
     printf("\nLOST MENU: ");
     printf("\n_____________");
     printf("\n1) SHOW LOST");
@@ -662,6 +708,9 @@ int LostMenu(){
     }
     else if (Input == 0){
         Menu();
+    }
+    else{
+        LostMenu();
     }
 return 0;
 }
@@ -725,6 +774,7 @@ int LostSmall(){
             lost_small[x] = Shoe_Num;
             small[x] = 0;
             printf("SHOE HAS BEEN MARKED LOST\n");
+            SL_Counter = SL_Counter + 1;
             SaveFile();
             break;
         }
@@ -771,6 +821,7 @@ int LostMedium(){
             lost_medium[x] = Shoe_Num;
             medium[x] = 0;
             printf("SHOE HAS BEEN MARKED LOST\n");
+            ML_Counter = ML_Counter + 1;
             SaveFile();
             break;
         }
@@ -817,6 +868,7 @@ int LostLarge(){
             lost_large[x] = Shoe_Num;
             large[x] = 0;
             printf("SHOE HAS BEEN MARKED LOST\n");
+            LL_Counter = LL_Counter + 1;
             SaveFile();
             break;
         }
@@ -1005,6 +1057,113 @@ int FoundLarge(){
     }
     else if (Input == 1){
         Lose_Shoe();
+    }
+}
+
+// Function to display Stats
+int stats(){
+    system("cls");
+    printf("STATISTCS");
+    printf("\n_________\n\n");
+
+    // Compares the Counters of the 3 sizes and displays the most popular one accordingly
+    if (Small_Counter > Medium_Counter && Small_Counter > Large_Counter){
+        printf("MOST POPULAR: SMALL (%d)\n", Small_Counter);
+    }
+    else if (Medium_Counter > Small_Counter && Medium_Counter > Large_Counter){
+        printf("MOST POPULAR: MEDIUM (%d)\n", Medium_Counter);
+    }
+    else if (Large_Counter > Small_Counter && Large_Counter > Medium_Counter){
+        printf("MOST POPULAR: LARGE (%d)\n", Large_Counter);
+    }
+    else if (Small_Counter == Medium_Counter && Small_Counter ==! Large_Counter){
+        printf("MOST POPULAR: SMALL (%d), MEDIUM (%d)\n", Small_Counter, Medium_Counter);
+    }
+    else if (Small_Counter == Large_Counter && Small_Counter ==! Medium_Counter){
+        printf("MOST POPULAR: SMALL (%d), LARGE (%d)\n", Small_Counter, Large_Counter);
+    }
+    else if (Medium_Counter == Large_Counter && Medium_Counter ==! Small_Counter){
+        printf("MOST POPULAR: MEDIUM (%d), LARGE (%d)\n", Medium_Counter, Large_Counter);
+    }
+    else{
+        printf("MOST POPULAR: NONE\n");
+    }
+
+    // Compares the Counters of the 3 sizes and displays the Most lost shoe size
+    if (SL_Counter > ML_Counter && SL_Counter > LL_Counter){
+        printf("MOST LOST: SMALL (%d)\n", SL_Counter);
+    }
+    else if (ML_Counter > SL_Counter && ML_Counter > ML_Counter){
+        printf("MOST LOST: MEDIUM (%d)\n", ML_Counter);
+    }
+    else if (LL_Counter > SL_Counter && LL_Counter > LL_Counter){
+        printf("MOST LOST: LARGE (%d)\n", LL_Counter);
+    }
+    else if (SL_Counter == ML_Counter && SL_Counter ==! LL_Counter){
+        printf("MOST LOST: SMALL (%d), MEDIUM (%d)\n", SL_Counter, ML_Counter);
+    }
+    else if (SL_Counter == LL_Counter && SL_Counter ==! ML_Counter){
+        printf("MOST LOST: SMALL (%d), LARGE (%d)\n", SL_Counter, LL_Counter);
+    }
+    else if (ML_Counter == LL_Counter && ML_Counter ==! SL_Counter){
+        printf("MOST LOST: MEDIUM (%d), LARGE (%d)\n", ML_Counter, LL_Counter);
+    }
+    else {
+        printf("MOST LOST: NONE\n");
+    }
+
+    // Compares the sizes and displays least popular
+    if (Small_Counter < Medium_Counter && Small_Counter < Large_Counter){
+        printf("LEAST POPULAR: SMALL (%d)\n", Small_Counter);
+    }
+    else if (Medium_Counter < Small_Counter && Medium_Counter < Large_Counter){
+        printf("LEAST POPULAR: MEDIUM (%d)\n", Medium_Counter);
+    }
+    else if (Large_Counter < Small_Counter && Large_Counter < Medium_Counter){
+        printf("LEAST POPULAR: LARGE (%d)\n", Large_Counter);
+    }
+    else if (Small_Counter == Medium_Counter && Small_Counter ==! Large_Counter){
+        printf("LEAST POPULAR: SMALL (%d), MEDIUM (%d)\n", Small_Counter, Medium_Counter);;
+    }
+    else if (Small_Counter == Large_Counter && Small_Counter ==! Medium_Counter){
+        printf("LEAST POPULAR: SMALL (%d), LARGE (%d)\n", Small_Counter, Large_Counter);
+    }
+    else if (Medium_Counter == Large_Counter && Medium_Counter ==! Small_Counter){
+        printf("LEAST POPULAR: MEDIUM (%d), LARGE (%d)\n", Medium_Counter, Large_Counter);
+    }
+    else{
+        printf("LEAST POPULAR: NONE\n");
+    }
+
+    // Compares the sizes and displays least lost
+    if (SL_Counter < ML_Counter && SL_Counter < LL_Counter){
+        printf("LEAST LOST: SMALL (%d)\n", SL_Counter);
+    }
+    else if (ML_Counter < SL_Counter && ML_Counter < LL_Counter){
+        printf("LEAST LOST: MEDIUM (%d)\n", ML_Counter);
+    }
+    else if (LL_Counter < SL_Counter && LL_Counter < ML_Counter){
+        printf("LEAST LOST: LARGE (%d)\n", LL_Counter);
+    }
+    else if (SL_Counter == ML_Counter && SL_Counter ==! LL_Counter){
+        printf("LEAST LOST: SMALL (%d), MEDIUM (%d)\n", SL_Counter, ML_Counter);
+    }
+    else if (SL_Counter == LL_Counter && SL_Counter ==! ML_Counter){
+        printf("LEAST LOST: SMALL (%d), LARGE (%d)\n", SL_Counter, LL_Counter);
+    }
+    else if (ML_Counter == LL_Counter && ML_Counter ==! SL_Counter){
+        printf("LEAST LOST: MEDIUM (%d), LARGE (%d)\n", ML_Counter, LL_Counter);
+    }
+    else {
+        printf("LEAST LOST: NONE\n");
+    }
+    printf("ENTER 0 TO RETURN TO MAIN MENU: ");
+    scanf("%d", &Input);
+    if (Input == 0){
+        Menu();
+    }
+    else{
+        stats();
     }
 }
 
