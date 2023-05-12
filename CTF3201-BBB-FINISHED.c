@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 // Initialize arrays for stock
 int small[30], medium[20], large[25];
@@ -37,7 +38,7 @@ int LL_Counter = 0;
 FILE *stock;
 
 // Setup Functions
-int FileCheck(), FileMake(), FileLoad(), Menu(), Rent(), Return(), ShowStock(), LostMenu(), Lose_Shoe(), Found(), SaveFile(), RentSmall(), RentMedium(), RentLarge(), ReturnSmall(), ReturnMedium(), ReturnLarge(), LostSmall(), LostMedium(), LostLarge(), FoundSmall(), FoundMedium(), FoundLarge(), stats();
+int FileCheck(), FileMake(), FileLoad(), Menu(), Rent(), Return(), ShowStock(), LostMenu(), Lose_Shoe(), Found(), SaveFile(), RentSmall(), RentMedium(), RentLarge(), ReturnSmall(), ReturnMedium(), ReturnLarge(), LostSmall(), LostMedium(), LostLarge(), FoundSmall(), FoundMedium(), FoundLarge(), stats(), Deposit();
 
 // Starts Function to check if data file exists
 int FileCheck() {
@@ -129,6 +130,23 @@ int FileLoad(){
 
     }
 
+int Deposit(){
+    system("cls");
+    printf("DO YOU HAVE £5: YES (1) / NO (2)\n");
+    scanf("%d", &Input);
+    if (Input == 1){
+        Rent();
+    }
+    else{
+        printf("YOU CANNOT RENT SHOE");
+        sleep(5);
+        Menu(0);
+    }
+return 0;
+}
+
+
+
 // Set up for the Menu Function.
 int Menu() {
     system("cls");
@@ -149,7 +167,7 @@ int Menu() {
     
     // Takes user input and directs the user to the corresponding funtion they have inputed
     if (Input == 1 ){
-            Rent();
+            Deposit();
     }
     else if (Input == 2){
             Return();
@@ -505,11 +523,12 @@ int ReturnSmall(){
         if (small_rented[x] == Shoe_Num){
             small[x] = Shoe_Num;
             small_rented[x] = 0;
-            printf("SHOE HAS BEEN RENTED\n");
+            printf("SHOE HAS BEEN RETURNED\n");
             SaveFile();
             break;
         }
     }
+    printf("YOUR DEPOSIT HAS BEEN RETURNED\n");
     printf("ENTER 0 TO RETURN TO MENU\nENTER 1 TO RETURN ANOTHER SHOE: ");
     scanf("%d", &Input);
     if (Input == 0){
@@ -559,11 +578,12 @@ int ReturnMedium(){
         if (medium_rented[x] == Shoe_Num){
             medium[x] = Shoe_Num;
             medium_rented[x] = 0;
-            printf("SHOE HAS BEEN RENTED\n");
+            printf("SHOE HAS BEEN RETURNED\n");
             SaveFile();
             break;
         }
     }
+    printf("YOUR DEPOSIT HAS BEEN RETURNED\n");
     printf("ENTER 0 TO RETURN TO MENU\nENTER 1 TO RETURN ANOTHER SHOE: ");
     scanf("%d", &Input);
     if (Input == 0){
@@ -616,10 +636,10 @@ int ReturnLarge(){
             large_rented[x] = 0;
             printf("SHOE HAS BEEN RENTED\n");
             SaveFile();
-            Menu();
             break;
         }
     }
+    printf("YOUR DEPOSIT HAS BEEN RETURNED\n");
     printf("ENTER 0 TO RETURN TO MENU\nENTER 1 TO RETURN ANOTHER SHOE: ");
     scanf("%d", &Input);
     if (Input == 0){
@@ -1172,4 +1192,4 @@ int main(){
     FileCheck();
     Menu();
     return 0;
-} 
+}
